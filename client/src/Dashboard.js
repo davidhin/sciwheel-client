@@ -2,8 +2,11 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
-import TextField from '@mui/material/TextField';
+import TextField from "@mui/material/TextField";
 
+fetch("http://localhost:5000/citation")
+  .then((res) => res.json())
+  .then((res) => console.log(res));
 
 export default function Dashboard() {
   return (
@@ -23,7 +26,12 @@ export default function Dashboard() {
         <Typography variant="body1">Tags</Typography>
       </Drawer>
       <Box sx={{ p: 3, flexGrow: 1 }}>
-      <TextField fullWidth id="outlined-basic" label="Search" variant="outlined" />
+        <TextField
+          fullWidth
+          id="outlined-basic"
+          label="Search"
+          variant="outlined"
+        />
       </Box>
     </Box>
   );

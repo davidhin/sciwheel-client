@@ -1,0 +1,30 @@
+version: "2"
+services:
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    links:
+      - server
+    networks:
+      - webappnetwork
+  server:
+    build: ./server
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    networks:
+      - webappnetwork
+  mongodb:
+    image: mongo
+    volumes:
+      - ./db:/data/db
+    ports:
+      - 27017:27017
+    command: mongod --noauth
+    networks:
+      - webappnetwork
+networks:
+  webappnetwork:
+    driver: bridge

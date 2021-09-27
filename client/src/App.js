@@ -1,6 +1,6 @@
 import { BrowserRouter as Router } from "react-router-dom";
-import { Link, Redirect, Route, Switch } from "react-router-dom";
-import Dashboard from "./Dashboard"
+import { Redirect, Route, Switch } from "react-router-dom";
+import Dashboard from "./Dashboard";
 
 function App() {
   return (
