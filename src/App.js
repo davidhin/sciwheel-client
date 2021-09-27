@@ -1,5 +1,6 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import { Link, Redirect, Route, Switch } from "react-router-dom";
+import Dashboard from "./Dashboard"
 
 function App() {
   return (
@@ -8,6 +9,9 @@ function App() {
         <Switch>
           <Route exact path="/">
             <Redirect to="/dashboard" />
+          </Route>
+          <Route path="/dashboard">
+            <Dashboard />
           </Route>
         </Switch>
       </div>
