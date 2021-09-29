@@ -22,7 +22,7 @@ services:
       - ./db:/data/db
     ports:
       - 27017:27017
-    command: mongod --noauth
+    command: mongod --noauth --quiet
     networks:
       - webappnetwork
 networks:
