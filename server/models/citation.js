@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 
 const citationSchema = mongoose.Schema({
-  title: String,
-  author: Array,
+  id: String,
+  name: String,
+  colour: String,
+  itemCount: String,
 });
 
 citationSchema.set("toJSON", {
