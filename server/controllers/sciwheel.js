@@ -48,9 +48,9 @@ module.exports = {
     return references;
   },
 
-  comments_page: async function (cookie, page) {
+  comments_page: async function (cookie, project, page) {
     return await fetch(
-      `https://sciwheel.com/work/api/collection/558788/comments?query=&resultsPerPage=100&page=${page}&useAuthorsFromSolr=true`,
+      `https://sciwheel.com/work/api/collection/${project}/comments?query=&resultsPerPage=100&page=${page}&useAuthorsFromSolr=true`,
       {
         method: "get",
         headers: { cookie: cookie },
@@ -59,17 +59,18 @@ module.exports = {
   },
 
   comments: async function (cookie) {
-    let page_1 = await module.exports.comments_page(cookie, 1);
+    let projects = await module.exports.ownedlist(cookie);
+    let project = projects[0]["id"];
+    let page_1 = await module.exports.comments_page(cookie, project, 1);
     let totalpages = Math.ceil(page_1["totalHitCount"] / 100);
     let comments = page_1["displayedItems"];
     let pages = [...Array(totalpages + 1).keys()].slice(2);
     pages = await Promise.all(
       pages.map(async (h) => {
-        return await module.exports.comments_page(cookie, h);
+        return await module.exports.comments_page(cookie, project, h);
       })
     );
     pages.forEach((page) => comments.push(...page["displayedItems"]));
-    console.log(pages.length, comments.length);
     return comments;
   },
 };
