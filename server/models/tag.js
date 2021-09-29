@@ -14,4 +14,4 @@ citationSchema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("Citation", citationSchema);
+module.exports = mongoose.model("Tag", citationSchema);
