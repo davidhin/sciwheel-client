@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 // mongodb
-mongoose.connect("mongodb://mongodb:27017/test", { useNewUrlParser: true });
+mongoose.connect("mongodb://mongodb:27017/main", { useNewUrlParser: true });
 
 // If there is a connection error send an error message
 mongoose.connection.on("error", (error) => {
