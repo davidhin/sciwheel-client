@@ -3,12 +3,27 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
+import { useEffect, useState } from "react";
 
-fetch("http://localhost:5000/citation")
-  .then((res) => res.json())
-  .then((res) => console.log(res));
+const search_citations = async (query) => {
+  return await fetch("http://localhost:5000/search", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: query }),
+  }).then((res) => res.json());
+};
 
-export default function Dashboard() {
+const Dashboard = (props) => {
+  const [cit, setCit] = useState([]);
+
+  useEffect(() => {
+    const getCit = async () => {
+      let ret = await search_citations("vuln");
+      setCit(ret);
+    };
+    getCit();
+  }, []);
+
   return (
     <Box sx={{ display: "flex", width: "100%" }}>
       <Drawer
@@ -31,8 +46,21 @@ export default function Dashboard() {
           id="outlined-basic"
           label="Search"
           variant="outlined"
+          onChange={async (e) => {
+            let ret = await search_citations(e.target.value);
+            setCit(ret);
+          }}
         />
+        {cit.map((e) => {
+          return (
+            <Box>
+              <Typography variant="body2">{e["title"]}</Typography>
+            </Box>
+          );
+        })}
       </Box>
     </Box>
   );
-}
+};
+
+export default Dashboard;
