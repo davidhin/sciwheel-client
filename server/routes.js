@@ -1,8 +1,8 @@
 var express = require("express");
-var citCtrl = require("./controllers/citationController");
+var ctrl = require("./controller");
 
 var router = express.Router();
-
-router.route("/citation").get(citCtrl.getCitation);
+router.route("/sync").get(ctrl.sync);
+router.route("/search").get(ctrl.search);
 
 module.exports = router;
