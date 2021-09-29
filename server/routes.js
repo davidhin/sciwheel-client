@@ -3,6 +3,6 @@ var ctrl = require("./controller");
 
 var router = express.Router();
 router.route("/sync").get(ctrl.sync);
-router.route("/search").get(ctrl.search);
+router.route("/search").post(ctrl.search);
 
 module.exports = router;
