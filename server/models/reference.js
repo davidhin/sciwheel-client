@@ -4,10 +4,13 @@ const mongoose_fuzzy_searching = require("mongoose-fuzzy-searching");
 const referenceSchema = mongoose.Schema({
   id: String,
   abstractText: String,
-  authors: Array,
+  firstAuthorsForView: Array,
+  lastAuthorForView: Array,
   tags: Array,
   title: String,
   pdfResource: Map,
+  publishedYear: Number,
+  publicationInfo: String,
 });
 
 referenceSchema.set("toJSON", {
@@ -23,6 +26,13 @@ referenceSchema.plugin(mongoose_fuzzy_searching, {
       name: "title",
       minSize: 2,
       weight: 5,
+      prefixOnly: true,
+    },
+    {
+      name: "publicationInfo",
+      minSize: 2,
+      weight: 5,
+      prefixOnly: true,
     },
   ],
 });
