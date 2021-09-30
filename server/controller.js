@@ -5,14 +5,8 @@ const sciwheel = require("./sciwheel");
 
 module.exports = {
   search: async function (req, res) {
-    let query = req.body["text"];
-    let tags = await Reference.find({
-      $or: [
-        { abstractText: { $regex: query, $options: "i" } },
-        { title: { $regex: query, $options: "i" } },
-      ],
-    });
-    return res.json(tags);
+    let fret = await Reference.fuzzySearch(req.body["text"]);
+    return res.json(fret);
   },
 
   sync: async function func(req, res) {

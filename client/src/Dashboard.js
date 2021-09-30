@@ -4,6 +4,7 @@ import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
+import { fuzzyHighlight } from "fuzzyhighlight";
 
 const search_citations = async (query) => {
   return await fetch("http://localhost:5000/search", {
@@ -48,13 +49,19 @@ const Dashboard = (props) => {
           variant="outlined"
           onChange={async (e) => {
             let ret = await search_citations(e.target.value);
+            ret.map((i) => {
+              i["fztitle"] = fuzzyHighlight(e.target.value, i["title"]);
+            });
             setCit(ret);
           }}
         />
         {cit.map((e) => {
           return (
-            <Box>
-              <Typography variant="body2">{e["title"]}</Typography>
+            <Box key={e["id"]}>
+              <Typography
+                variant="body2"
+                dangerouslySetInnerHTML={{ __html: e["fztitle"] }}
+              />
             </Box>
           );
         })}

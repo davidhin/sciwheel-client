@@ -21,7 +21,7 @@ referenceSchema.plugin(mongoose_fuzzy_searching, {
   fields: [
     {
       name: "title",
-      minSize: 3,
+      minSize: 2,
       weight: 5,
     },
   ],
