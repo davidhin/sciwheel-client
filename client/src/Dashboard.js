@@ -30,7 +30,7 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     const getCit = async () => {
-      let ret = await search_citations("vuln");
+      let ret = await search_citations("");
       setCit(ret);
     };
     getCit();
@@ -60,15 +60,18 @@ const Dashboard = (props) => {
           variant="outlined"
           onChange={async (e) => {
             let ret = await search_citations(e.target.value);
-            let fuse = new Fuse(ret, options); // "list" is the item array
-            let result = fuse.search(e.target.value);
-            result = result.map((resultItem) => {
-              highlighter(resultItem);
-              let item = resultItem.item;
-              item["fztitle"] = resultItem.highlight;
-              return item;
-            });
-            setCit(result);
+            setCit(ret);
+            // if (!e.target.value) {
+            //   setCit(ret);
+            // }
+            // let fuse = new Fuse(ret, options); // "list" is the item array
+            // let result = fuse.search(e.target.value);
+            // result = result.map((resultItem) => {
+            //   highlighter(resultItem);
+            //   let item = resultItem.item;
+            //   item["title"] = resultItem.highlight;
+            //   return item;
+            // });
           }}
         />
         {cit.map((e) => {
@@ -76,7 +79,7 @@ const Dashboard = (props) => {
             <Box key={e["id"]}>
               <Typography
                 variant="body2"
-                dangerouslySetInnerHTML={{ __html: e["fztitle"] }}
+                dangerouslySetInnerHTML={{ __html: e["title"] }}
               />
             </Box>
           );
