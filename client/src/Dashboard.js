@@ -4,7 +4,8 @@ import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
-import { fuzzyHighlight } from "fuzzyhighlight";
+import Fuse from "fuse.js";
+import highlighter from "./highlight";
 
 const search_citations = async (query) => {
   return await fetch("http://localhost:5000/search", {
@@ -16,6 +17,16 @@ const search_citations = async (query) => {
 
 const Dashboard = (props) => {
   const [cit, setCit] = useState([]);
+  var options = {
+    shouldSort: true,
+    includeMatches: true,
+    threshold: 0.4,
+    location: 0,
+    distance: 1000,
+    maxPatternLength: 32,
+    minMatchCharLength: 2,
+    keys: ["title"],
+  };
 
   useEffect(() => {
     const getCit = async () => {
@@ -49,10 +60,15 @@ const Dashboard = (props) => {
           variant="outlined"
           onChange={async (e) => {
             let ret = await search_citations(e.target.value);
-            ret.map((i) => {
-              i["fztitle"] = fuzzyHighlight(e.target.value, i["title"]);
+            let fuse = new Fuse(ret, options); // "list" is the item array
+            let result = fuse.search(e.target.value);
+            result = result.map((resultItem) => {
+              highlighter(resultItem);
+              let item = resultItem.item;
+              item["fztitle"] = resultItem.highlight;
+              return item;
             });
-            setCit(ret);
+            setCit(result);
           }}
         />
         {cit.map((e) => {
