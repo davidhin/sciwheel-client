@@ -16,7 +16,14 @@ app.use(express.json());
 app.use(cors());
 
 // mongodb
-mongoose.connect("mongodb://mongodb:27017/main", { useNewUrlParser: true });
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
+};
+mongoose.Promise = global.Promise;
+mongoose.connect("mongodb://mongodb:27017/main", options);
 
 // If there is a connection error send an error message
 mongoose.connection.on("error", (error) => {
