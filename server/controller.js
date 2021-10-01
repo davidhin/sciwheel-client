@@ -6,7 +6,12 @@ const sciwheel = require("./sciwheel");
 module.exports = {
   search: async function (req, res) {
     let fret = await Reference.fuzzySearch(req.body["text"]);
-    return res.json(fret);
+    return res.json(fret.slice(0, 50));
+  },
+
+  tags: async function (req, res) {
+    let tags = await Tag.find({});
+    return res.json(tags);
   },
 
   sync: async function func(req, res) {

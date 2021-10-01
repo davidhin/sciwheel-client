@@ -3,7 +3,7 @@ const mongoose_fuzzy_searching = require("mongoose-fuzzy-searching");
 
 const referenceSchema = mongoose.Schema({
   id: String,
-  abstractText: String,
+  // abstractText: String,
   firstAuthorsForView: Array,
   lastAuthorForView: Array,
   tags: Array,

@@ -14,6 +14,9 @@ import {
   purple,
   grey,
 } from "@mui/material/colors";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
+import { groupBy } from "lodash";
 
 const search_citations = async (query) => {
   return await fetch("http://localhost:5000/search", {
@@ -35,13 +38,19 @@ const colormap = {
 
 const Dashboard = (props) => {
   const [cit, setCit] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [filtertags, setFilterTags] = useState([]);
 
   useEffect(() => {
-    const getCit = async () => {
-      let ret = await search_citations("");
-      setCit(ret);
+    const initData = async () => {
+      let ret_cit = await search_citations("");
+      let ret_tags = await fetch("http://localhost:5000/tags").then((res) =>
+        res.json()
+      );
+      setCit(ret_cit);
+      setTags(groupBy(ret_tags, "colour"));
     };
-    getCit();
+    initData();
   }, []);
 
   return (
@@ -53,19 +62,53 @@ const Dashboard = (props) => {
             width: 240,
             boxSizing: "border-box",
             p: 3,
+            display: "block",
           },
         }}
         variant="permanent"
         anchor="left"
       >
         <Typography variant="body1">Tags</Typography>
+        {Object.values(tags).map((tg) => {
+          return (
+            <Box sx={{ display: "inline-block", marginBottom: 1 }}>
+              {tg.map((t) => {
+                return (
+                  <Card
+                    sx={{
+                      float: "left",
+                      background: colormap[t["colour"]][100],
+                      margin: "2px",
+                    }}
+                    variant="outlined"
+                    key={t["id"]}
+                  >
+                    <Typography
+                      sx={{
+                        color: colormap[t["colour"]][800],
+                        fontSize: "8pt",
+                      }}
+                      variant="body2"
+                      key={t["id"]}
+                    >
+                      {t["name"]}
+                    </Typography>
+                  </Card>
+                );
+              })}
+            </Box>
+          );
+        })}
       </Drawer>
       <Box sx={{ p: 3, flexGrow: 1 }}>
         <TextField
           fullWidth
+          sx={{ marginBottom: 1 }}
+          color="primary"
+          size="small"
           id="outlined-basic"
           label="Search"
-          variant="outlined"
+          variant="filled"
           onChange={async (e) => {
             let ret = await search_citations(e.target.value);
             setCit(ret);
@@ -79,21 +122,63 @@ const Dashboard = (props) => {
           let lastauth = e["lastAuthorForView"]
             ? " (...) " + e["lastAuthorForView"].join(" ")
             : "";
+          let pdfpath = e["pdfResource"]
+            ? e["pdfResource"]["cloudFilePath"]
+            : "";
           return (
             <Card
               sx={{ marginTop: "5px", padding: "5px" }}
               variant="outlined"
               key={e["id"]}
             >
+              {pdfpath !== "" ? (
+                <div>
+                  <Box
+                    sx={{
+                      float: "left",
+                      padding: 0,
+                      height: "1px",
+                      marginRight: 0.5,
+                      marginBottom: 0.5,
+                      cursor: "pointer",
+                    }}
+                    onClick={() =>
+                      window.open(
+                        "https://sciwheel.com" +
+                          pdfpath.replace("api/items", "item") +
+                          "/pdf"
+                      )
+                    }
+                  >
+                    <SpeakerNotesIcon fontSize="small" />
+                  </Box>
+                  <Box
+                    sx={{
+                      float: "left",
+                      padding: 0,
+                      height: "1px",
+                      marginRight: 0.5,
+                      cursor: "pointer",
+                    }}
+                    onClick={() =>
+                      window.open("https://sciwheel.com" + pdfpath)
+                    }
+                  >
+                    <PictureAsPdfIcon fontSize="small" />
+                  </Box>
+                </div>
+              ) : (
+                <div></div>
+              )}
               <Typography
                 variant="body2"
                 dangerouslySetInnerHTML={{ __html: e["title"] }}
               />
               <Typography sx={{ fontSize: "8pt" }} variant="body2">
-                {e["publicationInfo"]}
-              </Typography>
-              <Typography sx={{ fontSize: "6pt" }} variant="body2">
-                {year} {firstauth} {lastauth}
+                <b>{year}</b> {e["publicationInfo"]}
+                <i>
+                  {firstauth} {lastauth}
+                </i>
               </Typography>
               {e["tags"].map((t) => {
                 return (
@@ -104,6 +189,7 @@ const Dashboard = (props) => {
                       marginRight: "5px",
                     }}
                     variant="outlined"
+                    key={t["id"]}
                   >
                     <Typography
                       sx={{
