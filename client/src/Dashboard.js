@@ -78,7 +78,8 @@ const Dashboard = (props) => {
                     sx={{
                       float: "left",
                       background: colormap[t["colour"]][100],
-                      margin: "2px",
+                      margin: "1px",
+                      cursor: "pointer",
                     }}
                     variant="outlined"
                     key={t["id"]}
